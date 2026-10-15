@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/backend-scaffold`
 * **Asignado a:** Backend Developer
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** in progress
+* **Estado:** done
 * **Dependencias:** Ninguna (Ticket raíz del Backend)
 
 ---
