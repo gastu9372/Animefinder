@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/frontend-scaffold`
 * **Asignado a:** Frontend Developer
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** todo
+* **Estado:** done
 * **Dependencias:** TICKET-001 (para alinear contratos de API)
 
 ---
