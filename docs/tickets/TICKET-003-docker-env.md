@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/docker-env`
 * **Asignado a:** DevOps / Backend Developer
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** in progress
+* **Estado:** done
 * **Dependencias:** TICKET-001 (Backend Scaffold), TICKET-002 (Frontend Scaffold)
 
 ---
