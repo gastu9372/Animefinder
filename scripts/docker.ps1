@@ -47,8 +47,9 @@ switch ($Action) {
         & $dockerBin compose ps
     }
     "test" {
-        & $dockerBin compose exec backend pytest
+        & $dockerBin compose exec backend pytest -v
     }
+
     "audit" {
         & $dockerBin compose exec backend pip-audit
     }
