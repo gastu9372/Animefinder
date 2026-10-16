@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/anime-provider-layer`
 * **Asignado a:** Backend Developer
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** in progress
+* **Estado:** done
 * **Dependencias:** TICKET-001, TICKET-003, TICKET-004
 
 ---
