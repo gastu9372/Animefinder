@@ -1,8 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
+import { ImageDropzone } from "./components/ImageDropzone";
+import { TextSearchForm } from "./components/TextSearchForm";
+import { ResultList } from "./components/ResultList";
+import { SkeletonLoader } from "./components/SkeletonLoader";
+import { ErrorAlert } from "./components/ErrorAlert";
+import { EmptyState } from "./components/EmptyState";
+import { apiClient, ApiError } from "./services/apiClient";
+import { ProblemDetails, SearchResponse } from "./types/api";
 
 export const App: React.FC = () => {
+  const [activeMode, setActiveMode] = useState<"image" | "text">("image");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null);
+  const [error, setError] = useState<ProblemDetails | null>(null);
+
+  const handleImageSearch = async (file: File) => {
+    setIsLoading(true);
+    setError(null);
+    setSearchResponse(null);
+
+    try {
+      const data = await apiClient.searchByImage(file);
+      setSearchResponse(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.problem);
+      } else {
+        setError({
+          type: "about:blank",
+          title: "Error inesperado",
+          status: 500,
+          detail: "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
+          code: "CLIENT_ERROR",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleTextSearch = async (description: string) => {
+    setIsLoading(true);
+    setError(null);
+    setSearchResponse(null);
+
+    try {
+      const data = await apiClient.searchByText(description);
+      setSearchResponse(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.problem);
+      } else {
+        setError({
+          type: "about:blank",
+          title: "Error inesperado",
+          status: 500,
+          detail: "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
+          code: "CLIENT_ERROR",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleModeChange = (mode: "image" | "text") => {
+    setActiveMode(mode);
+    setError(null);
+  };
+
   return (
     <div
       className="app-container"
@@ -14,21 +82,23 @@ export const App: React.FC = () => {
       }}
     >
       <Header />
+
       <main
         style={{
           flex: 1,
           maxWidth: "1000px",
           width: "100%",
-          margin: "2rem auto",
+          margin: "1.5rem auto 3rem",
           textAlign: "center",
         }}
       >
-        <section className="hero-section" style={{ margin: "3rem 0" }}>
+        {/* Hero Section */}
+        <section className="hero-section" style={{ margin: "1.5rem 0 2rem" }}>
           <h2
             style={{
-              fontSize: "2.75rem",
+              fontSize: "2.5rem",
               fontWeight: 800,
-              marginBottom: "1rem",
+              marginBottom: "0.75rem",
               letterSpacing: "-0.02em",
             }}
           >
@@ -37,51 +107,76 @@ export const App: React.FC = () => {
           </h2>
           <p
             style={{
-              fontSize: "1.15rem",
+              fontSize: "1.1rem",
               color: "var(--color-text-muted)",
-              maxWidth: "650px",
-              margin: "0 auto 2.5rem",
+              maxWidth: "640px",
+              margin: "0 auto 1.75rem",
             }}
           >
-            Subí una captura de pantalla de cualquier escena o describí
-            libremente lo que recordás de la trama y personajes.
+            Subí una captura de cualquier escena o describí en lenguaje libre
+            lo que recordás de la trama y personajes.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
+          {/* Mode Selector Tabs */}
+          <div className="mode-tabs" role="tablist" aria-label="Modo de búsqueda">
             <button
-              className="glass-panel"
-              style={{
-                padding: "0.9rem 1.75rem",
-                fontSize: "1rem",
-                fontWeight: 600,
-                color: "var(--color-text-main)",
-                border: "1px solid var(--color-border-glow)",
-                background: "var(--gradient-glass)",
-              }}
+              role="tab"
+              aria-selected={activeMode === "image"}
+              className={`mode-tab-button ${activeMode === "image" ? "active" : ""}`}
+              onClick={() => handleModeChange("image")}
             >
-              📷 Subir o Pegar Imagen
+              <span>📷</span>
+              <span>Por Imagen</span>
             </button>
             <button
-              className="glass-panel"
-              style={{
-                padding: "0.9rem 1.75rem",
-                fontSize: "1rem",
-                fontWeight: 600,
-                color: "var(--color-text-main)",
-              }}
+              role="tab"
+              aria-selected={activeMode === "text"}
+              className={`mode-tab-button ${activeMode === "text" ? "active" : ""}`}
+              onClick={() => handleModeChange("text")}
             >
-              ✍️ Buscar por Descripción
+              <span>✍️</span>
+              <span>Por Descripción</span>
             </button>
           </div>
         </section>
+
+        {/* Search Input Forms */}
+        <section aria-label="Formulario de búsqueda">
+          {activeMode === "image" ? (
+            <ImageDropzone
+              onSearch={handleImageSearch}
+              isLoading={isLoading}
+            />
+          ) : (
+            <TextSearchForm
+              onSearch={handleTextSearch}
+              isLoading={isLoading}
+            />
+          )}
+        </section>
+
+        {/* Feedback & Result States */}
+        {error && (
+          <ErrorAlert
+            problem={error}
+            onDismiss={() => setError(null)}
+          />
+        )}
+
+        {isLoading && <SkeletonLoader />}
+
+        {!isLoading && searchResponse && searchResponse.results.length > 0 && (
+          <ResultList response={searchResponse} />
+        )}
+
+        {!isLoading && searchResponse && searchResponse.results.length === 0 && (
+          <EmptyState
+            queryType={searchResponse.query_type}
+            onReset={() => setSearchResponse(null)}
+          />
+        )}
       </main>
+
       <Footer />
     </div>
   );

@@ -1,4 +1,6 @@
 @import "./tokens.css";
+@import "./components.css";
+
 
 /* Reset Básico y Box Sizing */
 *,
