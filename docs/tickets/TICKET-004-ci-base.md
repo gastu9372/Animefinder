@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/ci-base`
 * **Asignado a:** DevOps / QA Specialist
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** in progress
+* **Estado:** done
 * **Dependencias:** TICKET-001, TICKET-002, TICKET-003
 
 ---
