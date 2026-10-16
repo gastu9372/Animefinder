@@ -6,24 +6,24 @@ export const Footer: React.FC = () => {
       className="site-footer"
       style={{
         marginTop: "auto",
-        padding: "3rem 1.5rem",
+        padding: "2.5rem 1.5rem",
         textAlign: "center",
         borderTop: "1px solid var(--color-border-subtle)",
-        color: "var(--color-text-muted)",
-        fontSize: "0.875rem",
+        color: "var(--color-text-dim)",
+        fontSize: "0.82rem",
       }}
     >
       <div
         style={{
-          maxWidth: "800px",
+          maxWidth: "760px",
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: "0.75rem",
+          gap: "0.6rem",
         }}
       >
         <p>
-          Reconocimiento de escenas impulsado por{" "}
+          Reconocimiento de fotogramas vía{" "}
           <a href="https://trace.moe" target="_blank" rel="noopener noreferrer">
             trace.moe
           </a>
@@ -37,15 +37,12 @@ export const Footer: React.FC = () => {
           </a>
           .
         </p>
-        <p style={{ fontSize: "0.8rem", color: "var(--color-text-dim)" }}>
-          <strong>Privacidad:</strong> Las imágenes subidas se procesan
-          exclusivamente en memoria volátil para cotejar fotogramas mediante
-          trace.moe y no se almacenan en disco. Las descripciones se analizan
-          mediante modelos de IA y AniList.
+        <p style={{ fontSize: "0.78rem" }}>
+          Las capturas se cotejan en memoria volátil y no se almacenan en
+          servidores permanentes.
         </p>
-        <p style={{ fontSize: "0.75rem", color: "var(--color-text-dim)" }}>
-          © {new Date().getFullYear()} AnimeFinder — Uso no comercial con fines
-          de referencia.
+        <p style={{ fontSize: "0.75rem", opacity: 0.8 }}>
+          © {new Date().getFullYear()} AnimeFinder — Plataforma de referencia sin fines comerciales.
         </p>
       </div>
     </footer>

@@ -39,8 +39,8 @@ describe("ResultCard Component", () => {
     expect(screen.getByText(/Episodio 1/i)).toBeInTheDocument();
 
     expect(screen.getByText(/05:20/i)).toBeInTheDocument();
-    expect(screen.getByText("📅 2006")).toBeInTheDocument();
-    expect(screen.getByText("📺 TV")).toBeInTheDocument();
+    expect(screen.getByText("2006")).toBeInTheDocument();
+    expect(screen.getByText("TV")).toBeInTheDocument();
     expect(screen.getByText(/Cuaderno sobrenatural que causa la muerte/i)).toBeInTheDocument();
   });
 
@@ -61,7 +61,7 @@ describe("ResultCard Component", () => {
 });
 
 describe("ResultList Component", () => {
-  it("renderiza la barra de estado con motor de IA, tiempo y badge de caché", () => {
+  it("renderiza la barra de estado con modo, tiempo y badge de caché", () => {
     const mockResponse: SearchResponse = {
       query_type: "text",
       search_mode: "llm",
@@ -73,10 +73,10 @@ describe("ResultList Component", () => {
 
     render(<ResultList response={mockResponse} />);
 
-    expect(screen.getByText(/Motor IA: Google Gemini/i)).toBeInTheDocument();
-    expect(screen.getByText(/Desde Caché/i)).toBeInTheDocument();
+    expect(screen.getByText(/Análisis de descripción/i)).toBeInTheDocument();
+    expect(screen.getByText(/En caché/i)).toBeInTheDocument();
     expect(screen.getByText(/15 ms/i)).toBeInTheDocument();
-    expect(screen.getByText(/Se descartaron 1 resultado/i)).toBeInTheDocument();
+    expect(screen.getByText(/Se omitieron 1 resultado/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Death Note" })).toBeInTheDocument();
   });
 });

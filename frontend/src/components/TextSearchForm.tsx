@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { IconSearch } from "./Icons";
 
 interface TextSearchFormProps {
   onSearch: (description: string) => void;
@@ -7,9 +8,9 @@ interface TextSearchFormProps {
 
 const SUGGESTIONS = [
   "Un chico con un cuaderno sobrenatural que mata a quien escribe su nombre",
-  "Una elfa maga de pelo blanco que emprende un viaje tras la muerte del héroe",
+  "Una elfa maga de pelo blanco que viaja tras la muerte del héroe",
   "Un mundo donde toda la humanidad fue petrificada en piedra por miles de años",
-  "Un chico con demonio motosierra en el pecho que se une a cazadores de demonios",
+  "Un chico con demonio motosierra en el pecho que caza demonios",
 ];
 
 export const TextSearchForm: React.FC<TextSearchFormProps> = ({
@@ -53,7 +54,7 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Describí lo que recordás: personajes, escena inicial, poderes, ambientación... (ej: 'anime de un chef invocado a otro mundo que cocina para un lobo')"
+          placeholder="Describí lo que recordás: ambientación, apariencia de los personajes, escenas clave o poderes especiales..."
           className="text-search-input"
           disabled={isLoading}
           maxLength={550}
@@ -96,7 +97,7 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
             onClick={() => handleApplySuggestion(s)}
             disabled={isLoading}
           >
-            "{s.slice(0, 32)}..."
+            {s.slice(0, 36)}...
           </button>
         ))}
       </div>
@@ -113,7 +114,8 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
           disabled={!isValid || isLoading}
           className="btn-primary"
         >
-          {isLoading ? "🧠 Razonando trama con IA..." : "✨ Buscar Anime"}
+          <IconSearch size={16} />
+          <span>{isLoading ? "Buscando coincidencias..." : "Buscar Anime"}</span>
         </button>
       </div>
     </form>

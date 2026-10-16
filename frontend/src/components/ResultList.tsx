@@ -12,13 +12,13 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
       case "llm":
         return (
           <span className="badge-tag badge-mode-llm">
-            🧠 Motor IA: Google Gemini
+            Análisis de descripción
           </span>
         );
       case "fallback":
         return (
           <span className="badge-tag badge-mode-fallback">
-            🔄 Modo Fallback: AniList Directo
+            Búsqueda directa
           </span>
         );
       case "trace.moe":
@@ -27,32 +27,31 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
           <span
             className="badge-tag"
             style={{
-              background: "hsla(210, 80%, 55%, 0.15)",
-              color: "var(--color-info)",
+              background: "var(--color-bg-elevated)",
+              color: "var(--color-text-muted)",
             }}
           >
-            📷 Motor de Imagen: trace.moe
+            trace.moe
           </span>
         );
     }
   };
 
   return (
-    <section aria-label="Resultados de búsqueda" style={{ marginTop: "2rem" }}>
+    <section aria-label="Resultados de búsqueda" style={{ marginTop: "1rem" }}>
       {/* Search Meta Status Bar */}
       <div className="search-meta-bar">
         <div className="meta-stats">
           <span>{getSearchModeLabel()}</span>
           {response.cached && (
-            <span className="badge-tag badge-cached">⚡ Desde Caché</span>
+            <span className="badge-tag badge-cached">En caché</span>
           )}
-          <span>⏱ {response.processing_time_ms} ms</span>
+          <span>{response.processing_time_ms} ms</span>
         </div>
 
         <div>
           <span style={{ color: "var(--color-text-muted)" }}>
-            {response.results.length} anime
-            {response.results.length !== 1 ? "s" : ""} encontrado
+            {response.results.length} resultado
             {response.results.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -61,16 +60,15 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
       {response.filtered_count > 0 && (
         <div
           style={{
-            fontSize: "0.85rem",
+            fontSize: "0.82rem",
             color: "var(--color-text-dim)",
             textAlign: "left",
-            marginBottom: "1rem",
-            padding: "0 0.5rem",
+            marginBottom: "0.75rem",
+            padding: "0 0.25rem",
           }}
         >
-          ℹ️ Se descartaron {response.filtered_count} resultado
-          {response.filtered_count > 1 ? "s" : ""} por umbral de similitud o
-          filtro de contenido.
+          Se omitieron {response.filtered_count} resultado
+          {response.filtered_count > 1 ? "s" : ""} por baja coincidencia.
         </div>
       )}
 

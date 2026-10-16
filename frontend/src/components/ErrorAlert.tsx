@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProblemDetails } from "../types/api";
+import { IconAlert, IconClock } from "./Icons";
 
 interface ErrorAlertProps {
   problem: ProblemDetails;
@@ -26,8 +27,8 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
 
   return (
     <div className="error-alert" role="alert">
-      <div className="error-icon" aria-hidden="true">
-        ⚠️
+      <div style={{ color: "var(--color-danger)", flexShrink: 0 }}>
+        <IconAlert size={20} />
       </div>
       <div className="error-details" style={{ flex: 1 }}>
         <h4>
@@ -37,8 +38,12 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
         <p>{problem.detail}</p>
 
         {countdown !== null && countdown > 0 && (
-          <span className="retry-countdown">
-            ⏱ Podés reintentar en {countdown} segundo{countdown > 1 ? "s" : ""}
+          <span
+            className="retry-countdown"
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
+          >
+            <IconClock size={13} />
+            <span>Podés reintentar en {countdown} segundo{countdown > 1 ? "s" : ""}</span>
           </span>
         )}
 

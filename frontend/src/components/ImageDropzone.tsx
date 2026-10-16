@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { IconAlert, IconSearch, IconUpload } from "./Icons";
 
 interface ImageDropzoneProps {
   onSearch: (file: File) => void;
@@ -118,7 +119,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   return (
     <div
       className="dropzone-wrapper"
-      style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}
+      style={{ width: "100%", maxWidth: "620px", margin: "0 auto" }}
     >
       <input
         type="file"
@@ -134,7 +135,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
           className="error-alert"
           style={{ padding: "0.75rem 1rem", marginBottom: "1rem" }}
         >
-          <span className="error-icon">⚠️</span>
+          <IconAlert size={18} />
           <div className="error-details">
             <p>{validationError}</p>
           </div>
@@ -155,27 +156,26 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               fileInputRef.current?.click();
             }
           }}
-          aria-label="Zona de carga de imagen. Hacé click o arrastrá un archivo aquí."
+          aria-label="Zona de carga de captura. Hacé click o arrastrá un archivo aquí."
         >
-          <div className="dropzone-icon">📷</div>
+          <div className="dropzone-icon-wrap">
+            <IconUpload size={28} />
+          </div>
           <div className="dropzone-instructions">
             <h3>Arrastrá una captura o hacé click para seleccionar</h3>
-            <p>Archivos admitidos: JPEG, PNG, WebP (hasta 8 MB)</p>
+            <p>Admite JPEG, PNG o WebP (hasta 8 MB)</p>
             <div className="dropzone-paste-badge">
-              <span>o pegá directamente una captura con</span>
+              <span>Podés pegar directamente con</span>
               <kbd>Ctrl + V</kbd>
             </div>
           </div>
         </div>
       ) : (
-        <div
-          className="glass-panel preview-container"
-          style={{ padding: "1.5rem" }}
-        >
+        <div className="preview-container">
           <div className="preview-image-wrapper">
             <img
               src={previewUrl}
-              alt="Vista previa de captura a buscar"
+              alt="Vista previa de captura"
               className="preview-image"
             />
           </div>
@@ -189,14 +189,15 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               disabled={isLoading}
               className="btn-primary"
             >
-              {isLoading ? "🔍 Identificando escena..." : "✨ Buscar Anime"}
+              <IconSearch size={16} />
+              <span>{isLoading ? "Buscando escena..." : "Identificar Anime"}</span>
             </button>
             <button
               onClick={handleClear}
               disabled={isLoading}
               className="btn-secondary"
             >
-              Cambiar imagen
+              Cambiar captura
             </button>
           </div>
         </div>

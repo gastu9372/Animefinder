@@ -7,6 +7,7 @@ import { ResultList } from "./components/ResultList";
 import { SkeletonLoader } from "./components/SkeletonLoader";
 import { ErrorAlert } from "./components/ErrorAlert";
 import { EmptyState } from "./components/EmptyState";
+import { IconImage, IconText } from "./components/Icons";
 import { apiClient, ApiError } from "./services/apiClient";
 import { ProblemDetails, SearchResponse } from "./types/api";
 
@@ -32,7 +33,7 @@ export const App: React.FC = () => {
       } else {
         setError({
           type: "about:blank",
-          title: "Error inesperado",
+          title: "Error de conexión",
           status: 500,
           detail:
             "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
@@ -58,7 +59,7 @@ export const App: React.FC = () => {
       } else {
         setError({
           type: "about:blank",
-          title: "Error inesperado",
+          title: "Error de conexión",
           status: 500,
           detail:
             "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
@@ -82,7 +83,6 @@ export const App: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        padding: "0 1rem",
       }}
     >
       <Header />
@@ -92,33 +92,18 @@ export const App: React.FC = () => {
           flex: 1,
           maxWidth: "1000px",
           width: "100%",
-          margin: "1.5rem auto 3rem",
-          textAlign: "center",
+          margin: "0 auto",
+          padding: "0 1.25rem 3rem",
         }}
       >
         {/* Hero Section */}
-        <section className="hero-section" style={{ margin: "1.5rem 0 2rem" }}>
-          <h2
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: 800,
-              marginBottom: "0.75rem",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Descubrí qué anime estás buscando en{" "}
-            <span className="text-gradient">segundos</span>
-          </h2>
-          <p
-            style={{
-              fontSize: "1.1rem",
-              color: "var(--color-text-muted)",
-              maxWidth: "640px",
-              margin: "0 auto 1.75rem",
-            }}
-          >
-            Subí una captura de cualquier escena o describí en lenguaje libre lo
-            que recordás de la trama y personajes.
+        <section className="hero-section">
+          <h1 className="hero-title">
+            Encontrá el anime que estás buscando
+          </h1>
+          <p className="hero-subtitle">
+            Subí una captura de cualquier escena o describí la trama y personajes
+            que recordás para identificar el anime.
           </p>
 
           {/* Mode Selector Tabs */}
@@ -133,7 +118,7 @@ export const App: React.FC = () => {
               className={`mode-tab-button ${activeMode === "image" ? "active" : ""}`}
               onClick={() => handleModeChange("image")}
             >
-              <span>📷</span>
+              <IconImage size={16} />
               <span>Por Imagen</span>
             </button>
             <button
@@ -142,7 +127,7 @@ export const App: React.FC = () => {
               className={`mode-tab-button ${activeMode === "text" ? "active" : ""}`}
               onClick={() => handleModeChange("text")}
             >
-              <span>✍️</span>
+              <IconText size={16} />
               <span>Por Descripción</span>
             </button>
           </div>

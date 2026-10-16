@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { AnimeResult } from "../types/api";
+import {
+  IconCalendar,
+  IconClock,
+  IconClose,
+  IconPlay,
+  IconTarget,
+  IconTv,
+} from "./Icons";
 
 interface ResultCardProps {
   result: AnimeResult;
@@ -13,16 +21,21 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
   // Confidence styling
   const getConfidenceBadge = () => {
     if (result.confidence_percentage !== null) {
-      const pct = (result.confidence_percentage * 100).toFixed(1);
+      const value =
+        result.confidence_percentage > 1
+          ? result.confidence_percentage
+          : result.confidence_percentage * 100;
+      const pct = value.toFixed(1);
       const levelClass =
-        result.confidence_percentage >= 0.85
+        value >= 85
           ? "confidence-high"
-          : result.confidence_percentage >= 0.7
+          : value >= 70
             ? "confidence-medium"
             : "confidence-low";
       return (
         <span className={`confidence-pill ${levelClass}`}>
-          🎯 {pct}% de precisión
+          <IconTarget size={13} />
+          <span>{pct}% de precisión</span>
         </span>
       );
     }
@@ -36,12 +49,17 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
 
     const label =
       result.confidence_level === "high"
-        ? "Confianza Alta"
+        ? "Alta coincidencia"
         : result.confidence_level === "medium"
-          ? "Confianza Media"
-          : "Confianza Sugerida";
+          ? "Coincidencia media"
+          : "Sugerencia aproximada";
 
-    return <span className={`confidence-pill ${levelClass}`}>✨ {label}</span>;
+    return (
+      <span className={`confidence-pill ${levelClass}`}>
+        <IconTarget size={13} />
+        <span>{label}</span>
+      </span>
+    );
   };
 
   const isSynopsisLong = result.synopsis && result.synopsis.length > 240;
@@ -62,7 +80,6 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         />
         {result.is_adult && !isAdultRevealed && (
           <div className="cover-blur-overlay">
-            <span style={{ fontSize: "1.25rem" }}>🔞</span>
             <span
               style={{ fontSize: "0.75rem", color: "#fff", fontWeight: 600 }}
             >
@@ -94,9 +111,17 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
 
         {/* Badges Bar */}
         <div className="result-badges">
-          {result.year && <span className="meta-badge">📅 {result.year}</span>}
+          {result.year && (
+            <span className="meta-badge">
+              <IconCalendar size={13} />
+              <span>{result.year}</span>
+            </span>
+          )}
           {result.format && (
-            <span className="meta-badge">📺 {result.format}</span>
+            <span className="meta-badge">
+              <IconTv size={13} />
+              <span>{result.format}</span>
+            </span>
           )}
           {result.scene_info?.episode !== null &&
             result.scene_info?.episode !== undefined && (
@@ -106,27 +131,27 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
             )}
           {result.scene_info?.timestamp_formatted && (
             <span className="meta-badge scene-badge">
-              ⏱ {result.scene_info.timestamp_formatted}
+              <IconClock size={13} />
+              <span>{result.scene_info.timestamp_formatted}</span>
             </span>
           )}
           {result.is_adult && (
             <span
               className="meta-badge"
               style={{
-                background: "hsla(350, 89%, 60%, 0.15)",
+                background: "var(--color-danger-subtle)",
                 color: "var(--color-danger)",
-                borderColor: "hsla(350, 89%, 60%, 0.4)",
               }}
             >
-              +18 Adulto
+              +18
             </span>
           )}
         </div>
 
-        {/* LLM Match Reason Bubble */}
+        {/* Match Reason */}
         {result.match_reason && (
           <div className="match-reason-box">
-            <strong>Razón de Coincidencia de IA</strong>
+            <strong>Por qué coincide</strong>
             <p>{result.match_reason}</p>
           </div>
         )}
@@ -156,12 +181,16 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                 onClick={() => setShowVideo(true)}
                 className="btn-secondary"
                 style={{
-                  padding: "0.35rem 0.85rem",
+                  padding: "0.35rem 0.75rem",
                   fontSize: "0.8rem",
                   marginTop: "0.25rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
                 }}
               >
-                🎬 Ver escena en video
+                <IconPlay size={12} />
+                <span>Ver escena</span>
               </button>
             ) : (
               <div className="video-preview-section">
@@ -169,6 +198,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
+                    alignItems: "center",
                     marginBottom: "0.5rem",
                   }}
                 >
@@ -178,18 +208,21 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                       color: "var(--color-text-muted)",
                     }}
                   >
-                    Vista previa de escena (
-                    {result.scene_info.timestamp_formatted})
+                    Escena en {result.scene_info.timestamp_formatted}
                   </span>
                   <button
                     onClick={() => setShowVideo(false)}
                     style={{
                       background: "none",
                       color: "var(--color-text-muted)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.25rem",
                       fontSize: "0.8rem",
                     }}
                   >
-                    ✕ Cerrar video
+                    <IconClose size={14} />
+                    <span>Cerrar</span>
                   </button>
                 </div>
                 <video
