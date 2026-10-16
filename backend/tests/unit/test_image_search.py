@@ -2,10 +2,11 @@ import io
 from unittest.mock import AsyncMock, patch
 
 import fakeredis.aioredis as fake_aioredis
+import pytest
 from fastapi import Request
 from httpx import ASGITransport, AsyncClient
 from PIL import Image
-import pytest
+
 from src.api.v1.endpoints.search_image import extract_client_ip
 from src.core.config import get_settings
 from src.domain.models import CanonicalAnime, RawImageMatch, TitleInfo
@@ -73,7 +74,9 @@ async def test_search_image_success_flow(monkeypatch: pytest.MonkeyPatch) -> Non
     mock_anime_meta = {
         100: CanonicalAnime(
             id=100,
-            title=TitleInfo(romaji="Steins;Gate", english="Steins;Gate", native="シュタインズ・ゲート"),
+            title=TitleInfo(
+                romaji="Steins;Gate", english="Steins;Gate", native="シュタインズ・ゲート"
+            ),
             cover_image="https://img.anilist.co/sg.jpg",
             synopsis="Científicos locos y viajes en el tiempo.",
             year=2011,

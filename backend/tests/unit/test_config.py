@@ -2,6 +2,7 @@ import os
 
 import pytest
 from pydantic import ValidationError
+
 from src.core.config import Settings
 
 

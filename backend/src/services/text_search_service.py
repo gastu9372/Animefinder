@@ -6,12 +6,17 @@ from typing import Any
 
 import nh3
 from rapidfuzz import fuzz
+
 from src.core.config import Settings, get_settings
 from src.core.exceptions import RateLimitExceededError
 from src.core.redis import get_redis_client
 from src.domain.models import CanonicalAnime
 from src.providers.anilist import AniListProvider
-from src.providers.gemini_ai import GeminiLLMProvider, LLMDailyCapReachedError, LLMNotConfiguredError
+from src.providers.gemini_ai import (
+    GeminiLLMProvider,
+    LLMDailyCapReachedError,
+    LLMNotConfiguredError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +66,9 @@ class TextSearchService:
         except Exception as e:
             logger.warning("Fallo en Redis al verificar rate limits de texto", exc_info=e)
 
-    async def search_by_description(self, raw_description: str, client_ip: str, limit: int = 5) -> dict[str, Any]:
+    async def search_by_description(
+        self, raw_description: str, client_ip: str, limit: int = 5
+    ) -> dict[str, Any]:
         start_time = time.perf_counter()
 
         # 1. Validar rate limit
@@ -91,11 +98,15 @@ class TextSearchService:
 
         # 4. Intentar inferencia inteligente con LLM (Gemini)
         try:
-            candidates = await self.llm_provider.infer_animes_from_description(normalized_text, limit=limit)
+            candidates = await self.llm_provider.infer_animes_from_description(
+                normalized_text, limit=limit
+            )
 
             # Cruzar candidatos contra AniList y validar similitud anti-alucinación
             for candidate in candidates:
-                matches = await self.anilist_provider.search_anime_by_title(candidate.anime_title, limit=1)
+                matches = await self.anilist_provider.search_anime_by_title(
+                    candidate.anime_title, limit=1
+                )
                 if not matches:
                     filtered_count += 1
                     continue
@@ -123,44 +134,50 @@ class TextSearchService:
 
                 clean_reason = nh3.clean(candidate.match_reason, tags=set())
 
-                results.append({
-                    "id": best_anime.id,
-                    "title": best_anime.title.model_dump(),
-                    "cover_image": best_anime.cover_image,
-                    "synopsis": best_anime.synopsis,
-                    "year": best_anime.year,
-                    "format": best_anime.format,
-                    "is_adult": best_anime.is_adult,
-                    "confidence_percentage": None,
-                    "confidence_level": candidate.confidence_level,
-                    "match_reason": clean_reason,
-                    "scene_info": None,
-                })
+                results.append(
+                    {
+                        "id": best_anime.id,
+                        "title": best_anime.title.model_dump(),
+                        "cover_image": best_anime.cover_image,
+                        "synopsis": best_anime.synopsis,
+                        "year": best_anime.year,
+                        "format": best_anime.format,
+                        "is_adult": best_anime.is_adult,
+                        "confidence_percentage": None,
+                        "confidence_level": candidate.confidence_level,
+                        "match_reason": clean_reason,
+                        "scene_info": None,
+                    }
+                )
 
         except (LLMNotConfiguredError, LLMDailyCapReachedError, Exception) as exc:
             # Fallback automático elegante a búsqueda directa en AniList
             logger.info("Activando fallback automático a AniList: %s", str(exc))
             search_mode = "fallback"
 
-            fallback_matches = await self.anilist_provider.search_anime_by_title(normalized_text, limit=limit)
+            fallback_matches = await self.anilist_provider.search_anime_by_title(
+                normalized_text, limit=limit
+            )
             for anime in fallback_matches:
                 if self.settings.ADULT_CONTENT_POLICY == "filter" and anime.is_adult:
                     filtered_count += 1
                     continue
 
-                results.append({
-                    "id": anime.id,
-                    "title": anime.title.model_dump(),
-                    "cover_image": anime.cover_image,
-                    "synopsis": anime.synopsis,
-                    "year": anime.year,
-                    "format": anime.format,
-                    "is_adult": anime.is_adult,
-                    "confidence_percentage": None,
-                    "confidence_level": "medium",
-                    "match_reason": "Coincidencia por búsqueda textual directa en el catálogo de AniList.",
-                    "scene_info": None,
-                })
+                results.append(
+                    {
+                        "id": anime.id,
+                        "title": anime.title.model_dump(),
+                        "cover_image": anime.cover_image,
+                        "synopsis": anime.synopsis,
+                        "year": anime.year,
+                        "format": anime.format,
+                        "is_adult": anime.is_adult,
+                        "confidence_percentage": None,
+                        "confidence_level": "medium",
+                        "match_reason": "Coincidencia por búsqueda textual directa en el catálogo de AniList.",
+                        "scene_info": None,
+                    }
+                )
 
         elapsed_ms = int((time.perf_counter() - start_time) * 1000)
         response_payload = {

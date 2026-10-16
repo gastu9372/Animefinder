@@ -1,10 +1,10 @@
-import json
 import logging
 from typing import Literal
 
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
+
 from src.core.config import Settings, get_settings
 from src.core.redis import get_redis_client
 
@@ -13,22 +13,32 @@ logger = logging.getLogger(__name__)
 
 class LLMNotConfiguredError(Exception):
     """Excepción cuando no se ha configurado la clave de Gemini."""
+
     pass
 
 
 class LLMDailyCapReachedError(Exception):
     """Excepción cuando se supera el tope diario de llamadas al LLM."""
+
     pass
 
 
 class LLMCandidate(BaseModel):
-    anime_title: str = Field(..., description="Nombre representativo del anime (en romaji o inglés)")
-    confidence_level: Literal["high", "medium", "low"] = Field(..., description="Nivel cualitativo de confianza")
-    match_reason: str = Field(..., description="Breve justificación de por qué coincide con la descripción")
+    anime_title: str = Field(
+        ..., description="Nombre representativo del anime (en romaji o inglés)"
+    )
+    confidence_level: Literal["high", "medium", "low"] = Field(
+        ..., description="Nivel cualitativo de confianza"
+    )
+    match_reason: str = Field(
+        ..., description="Breve justificación de por qué coincide con la descripción"
+    )
 
 
 class LLMStructuredOutput(BaseModel):
-    candidates: list[LLMCandidate] = Field(default_factory=list, description="Lista de hasta 5 animes candidatos")
+    candidates: list[LLMCandidate] = Field(
+        default_factory=list, description="Lista de hasta 5 animes candidatos"
+    )
 
 
 class GeminiLLMProvider:
@@ -50,7 +60,9 @@ class GeminiLLMProvider:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()
 
-    async def infer_animes_from_description(self, description: str, limit: int = 5) -> list[LLMCandidate]:
+    async def infer_animes_from_description(
+        self, description: str, limit: int = 5
+    ) -> list[LLMCandidate]:
         """Razona sobre la descripción y retorna candidatos estructurados."""
         if not self.settings.GEMINI_API_KEY:
             logger.info("GEMINI_API_KEY no configurada; activando fallback automático.")
@@ -62,7 +74,10 @@ class GeminiLLMProvider:
             daily_key = "quota:gemini:daily"
             current_calls = await redis.get(daily_key)
             if current_calls and int(current_calls) >= self.settings.LLM_DAILY_CALL_CAP:
-                logger.warning("Tope diario de llamadas a Gemini alcanzado (%s)", self.settings.LLM_DAILY_CALL_CAP)
+                logger.warning(
+                    "Tope diario de llamadas a Gemini alcanzado (%s)",
+                    self.settings.LLM_DAILY_CALL_CAP,
+                )
                 raise LLMDailyCapReachedError("Tope diario alcanzado")
         except LLMDailyCapReachedError:
             raise
@@ -72,7 +87,7 @@ class GeminiLLMProvider:
         # 2. Invocación a Gemini SDK
         try:
             client = genai.Client(api_key=self.settings.GEMINI_API_KEY)
-            prompt = f"Descripción del usuario: \"{description}\"\nIdentifica los animes correspondientes (máximo {limit})."
+            prompt = f'Descripción del usuario: "{description}"\nIdentifica los animes correspondientes (máximo {limit}).'
 
             config = types.GenerateContentConfig(
                 system_instruction=self.SYSTEM_INSTRUCTION,
@@ -83,6 +98,7 @@ class GeminiLLMProvider:
 
             # En el SDK google-genai generate_content es síncrono
             import asyncio
+
             response = await asyncio.to_thread(
                 client.models.generate_content,
                 model=self.settings.GEMINI_MODEL,

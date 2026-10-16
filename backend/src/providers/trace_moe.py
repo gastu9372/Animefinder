@@ -3,6 +3,7 @@ import logging
 from typing import Any
 
 import httpx
+
 from src.core.config import Settings, get_settings
 from src.core.exceptions import (
     ExternalServiceUnavailableError,
@@ -23,7 +24,9 @@ class TraceMoeProvider(BaseImageSearchProvider):
     sincronización con /me y manejo explícito de códigos de estado.
     """
 
-    def __init__(self, settings: Settings | None = None, http_client: httpx.AsyncClient | None = None) -> None:
+    def __init__(
+        self, settings: Settings | None = None, http_client: httpx.AsyncClient | None = None
+    ) -> None:
         self.settings = settings or get_settings()
         self._client = http_client
         self._semaphore = asyncio.Semaphore(self.settings.TRACEMOE_MAX_CONCURRENCY)
@@ -47,7 +50,10 @@ class TraceMoeProvider(BaseImageSearchProvider):
                 quota = data.get("quota", 100)
                 used = data.get("quotaUsed", 0)
                 remaining = max(0, quota - used)
-                logger.info("trace.moe cuota sincronizada", extra={"quota": quota, "used": used, "remaining": remaining})
+                logger.info(
+                    "trace.moe cuota sincronizada",
+                    extra={"quota": quota, "used": used, "remaining": remaining},
+                )
                 return remaining
             return 0
         except Exception as e:
@@ -68,7 +74,9 @@ class TraceMoeProvider(BaseImageSearchProvider):
                 response = await client.post(url, content=image_bytes, headers=headers)
             except httpx.RequestError as exc:
                 logger.error("Error de conexión con trace.moe", exc_info=exc)
-                raise ExternalServiceUnavailableError("trace.moe", "Error al comunicarse con trace.moe") from exc
+                raise ExternalServiceUnavailableError(
+                    "trace.moe", "Error al comunicarse con trace.moe"
+                ) from exc
 
             # Procesamiento explícito de códigos HTTP
             if response.status_code == 400:
@@ -83,7 +91,9 @@ class TraceMoeProvider(BaseImageSearchProvider):
                     err_msg = ""
 
                 if "concurrency" in err_msg:
-                    logger.warning("trace.moe reportó concurrencia excedida; reintentando brevemente...")
+                    logger.warning(
+                        "trace.moe reportó concurrencia excedida; reintentando brevemente..."
+                    )
                     await asyncio.sleep(0.5)
                     response = await client.post(url, content=image_bytes, headers=headers)
                     if response.status_code == 402:
@@ -96,7 +106,8 @@ class TraceMoeProvider(BaseImageSearchProvider):
 
             if response.status_code in {503, 504}:
                 raise ExternalServiceUnavailableError(
-                    "trace.moe", "El motor de trace.moe se encuentra sobrecargado o en mantenimiento."
+                    "trace.moe",
+                    "El motor de trace.moe se encuentra sobrecargado o en mantenimiento.",
                 )
 
             if response.status_code != 200:

@@ -1,7 +1,7 @@
 import logging
-from typing import AsyncGenerator
 
 import redis.asyncio as aioredis
+
 from src.core.config import get_settings
 
 logger = logging.getLogger(__name__)

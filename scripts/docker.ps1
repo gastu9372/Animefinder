@@ -58,11 +58,14 @@ switch ($Action) {
     "lint" {
         & $dockerBin compose exec backend ruff check --fix .
         & $dockerBin compose exec backend ruff format .
+        & $dockerBin cp animefinder-backend:/app/src backend/
+        & $dockerBin cp animefinder-backend:/app/tests backend/
         & $dockerBin compose exec backend ruff check .
         & $dockerBin compose exec backend ruff format --check .
         & $dockerBin compose exec backend mypy src tests
     }
 }
+
 
 
 

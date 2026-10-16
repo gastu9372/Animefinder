@@ -2,6 +2,7 @@ import fakeredis.aioredis as fake_aioredis
 import httpx
 import pytest
 import respx
+
 from src.core.config import Settings
 from src.core.exceptions import (
     ExternalServiceUnavailableError,
@@ -40,7 +41,13 @@ async def test_trace_moe_search_and_deduplication(test_settings: Settings) -> No
         "error": "",
         "result": [
             {"anilist": 1, "similarity": 0.95, "episode": 2, "from": 120.0, "to": 125.0},
-            {"anilist": 1, "similarity": 0.82, "episode": 2, "from": 118.0, "to": 122.0},  # Duplicado menor
+            {
+                "anilist": 1,
+                "similarity": 0.82,
+                "episode": 2,
+                "from": 118.0,
+                "to": 122.0,
+            },  # Duplicado menor
             {"anilist": 2, "similarity": 0.77, "episode": 5, "from": 45.0, "to": 48.0},
         ],
     }
@@ -85,7 +92,9 @@ async def test_trace_moe_invalid_image_400(test_settings: Settings) -> None:
 
 
 @pytest.mark.asyncio
-async def test_anilist_batch_query_and_caching(test_settings: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_anilist_batch_query_and_caching(
+    test_settings: Settings, monkeypatch: pytest.MonkeyPatch
+) -> None:
     fake_redis = fake_aioredis.FakeRedis(decode_responses=True)
 
     async def get_fake_redis():
@@ -99,7 +108,11 @@ async def test_anilist_batch_query_and_caching(test_settings: Settings, monkeypa
                 "media": [
                     {
                         "id": 1,
-                        "title": {"romaji": "Cowboy Bebop", "english": "Cowboy Bebop", "native": "カウボーイビバップ"},
+                        "title": {
+                            "romaji": "Cowboy Bebop",
+                            "english": "Cowboy Bebop",
+                            "native": "カウボーイビバップ",
+                        },
                         "coverImage": {"extraLarge": "https://img.anilist.co/1.jpg"},
                         "description": "Un cazarrecompensas espacial.<br>",
                         "seasonYear": 1998,
@@ -113,7 +126,9 @@ async def test_anilist_batch_query_and_caching(test_settings: Settings, monkeypa
 
     async with httpx.AsyncClient() as client:
         with respx.mock() as respx_mock:
-            route = respx_mock.post("https://graphql.anilist.co").respond(200, json=mock_graphql_resp)
+            route = respx_mock.post("https://graphql.anilist.co").respond(
+                200, json=mock_graphql_resp
+            )
             provider = AniListProvider(settings=test_settings, http_client=client)
 
             # Primera llamada: debe consultar la API de AniList
@@ -130,7 +145,9 @@ async def test_anilist_batch_query_and_caching(test_settings: Settings, monkeypa
 
 
 @pytest.mark.asyncio
-async def test_anilist_rate_limit_429(test_settings: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_anilist_rate_limit_429(
+    test_settings: Settings, monkeypatch: pytest.MonkeyPatch
+) -> None:
     fake_redis = fake_aioredis.FakeRedis(decode_responses=True)
     monkeypatch.setattr("src.providers.anilist.get_redis_client", lambda: fake_redis)
 

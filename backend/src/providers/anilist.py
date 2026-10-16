@@ -1,10 +1,10 @@
-import json
 import logging
 import re
 from typing import Any
 
 import httpx
 import nh3
+
 from src.core.config import Settings, get_settings
 from src.core.exceptions import ExternalServiceUnavailableError, RateLimitExceededError
 from src.core.redis import get_redis_client
@@ -89,7 +89,9 @@ class AniListProvider(BaseMetadataProvider):
     }
     """
 
-    def __init__(self, settings: Settings | None = None, http_client: httpx.AsyncClient | None = None) -> None:
+    def __init__(
+        self, settings: Settings | None = None, http_client: httpx.AsyncClient | None = None
+    ) -> None:
         self.settings = settings or get_settings()
         self._client = http_client
 
@@ -139,7 +141,8 @@ class AniListProvider(BaseMetadataProvider):
             retry_after = int(response.headers.get("Retry-After", 60))
             logger.warning("AniList rate limit 429 alcanzado", extra={"retry_after": retry_after})
             raise RateLimitExceededError(
-                "La API de AniList ha alcanzado su límite de peticiones.", retry_after_seconds=retry_after
+                "La API de AniList ha alcanzado su límite de peticiones.",
+                retry_after_seconds=retry_after,
             )
 
         if response.status_code != 200:
@@ -178,10 +181,14 @@ class AniListProvider(BaseMetadataProvider):
 
         if response.status_code == 429:
             retry_after = int(response.headers.get("Retry-After", 60))
-            raise RateLimitExceededError("AniList rate limit alcanzado.", retry_after_seconds=retry_after)
+            raise RateLimitExceededError(
+                "AniList rate limit alcanzado.", retry_after_seconds=retry_after
+            )
 
         if response.status_code != 200:
-            raise ExternalServiceUnavailableError("AniList", f"Error AniList HTTP {response.status_code}")
+            raise ExternalServiceUnavailableError(
+                "AniList", f"Error AniList HTTP {response.status_code}"
+            )
 
         data = response.json()
         media_list = data.get("data", {}).get("Page", {}).get("media", [])

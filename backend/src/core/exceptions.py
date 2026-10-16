@@ -10,7 +10,9 @@ class ProblemDetails(BaseModel):
     title: str = Field(..., description="Título legible del error")
     status: int = Field(..., description="Código de estado HTTP")
     detail: str = Field(..., description="Descripción detallada del error para el cliente")
-    instance: str | None = Field(default=None, description="URI del endpoint donde ocurrió el error")
+    instance: str | None = Field(
+        default=None, description="URI del endpoint donde ocurrió el error"
+    )
     code: str = Field(..., description="Código de error interno del sistema")
     retry_after_seconds: int | None = Field(
         default=None, description="Segundos a esperar antes de reintentar si aplica"
@@ -41,7 +43,9 @@ class AppException(Exception):
 
 
 class InvalidImageError(AppException):
-    def __init__(self, detail: str = "El archivo enviado no es una imagen válida o está corrupto.") -> None:
+    def __init__(
+        self, detail: str = "El archivo enviado no es una imagen válida o está corrupto."
+    ) -> None:
         super().__init__(
             status_code=400,
             code="INVALID_IMAGE",
@@ -66,7 +70,9 @@ class UnsupportedMediaTypeError(AppException):
 
 class RateLimitExceededError(AppException):
     def __init__(
-        self, detail: str = "Has superado el límite de peticiones permitido.", retry_after_seconds: int = 60
+        self,
+        detail: str = "Has superado el límite de peticiones permitido.",
+        retry_after_seconds: int = 60,
     ) -> None:
         super().__init__(
             status_code=429,

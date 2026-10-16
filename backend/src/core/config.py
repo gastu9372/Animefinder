@@ -23,7 +23,6 @@ class Settings(BaseSettings):
     REDIS_URL: str = Field(..., description="URL de conexión a Redis obligatoria")
     RATE_LIMIT_PER_IP_PER_MIN: int = Field(default=10, gt=0)
 
-
     IMAGE_SEARCH_PER_IP_PER_DAY: int = Field(default=10, gt=0)
 
     # --- Procesamiento de Imágenes ---

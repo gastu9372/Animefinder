@@ -2,8 +2,9 @@ import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import fakeredis.aioredis as fake_aioredis
-from httpx import ASGITransport, AsyncClient
 import pytest
+from httpx import ASGITransport, AsyncClient
+
 from src.core.config import Settings
 from src.core.exceptions import RateLimitExceededError
 from src.domain.models import CanonicalAnime, TitleInfo
@@ -60,11 +61,12 @@ async def test_gemini_provider_daily_cap_exceeded(monkeypatch: pytest.MonkeyPatc
 
     monkeypatch.setattr("src.providers.gemini_ai.get_redis_client", get_fake_redis)
 
-    settings = Settings(GEMINI_API_KEY="dummy-key", LLM_DAILY_CALL_CAP=200, REDIS_URL="redis://localhost:6379/1")
+    settings = Settings(
+        GEMINI_API_KEY="dummy-key", LLM_DAILY_CALL_CAP=200, REDIS_URL="redis://localhost:6379/1"
+    )
     provider = GeminiLLMProvider(settings=settings)
     with pytest.raises(LLMDailyCapReachedError):
         await provider.infer_animes_from_description("Un chico con un cuaderno")
-
 
 
 @pytest.mark.asyncio
@@ -77,26 +79,30 @@ async def test_text_search_llm_success_flow(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setattr("src.services.text_search_service.get_redis_client", get_fake_redis)
 
     mock_llm = MagicMock(spec=GeminiLLMProvider)
-    mock_llm.infer_animes_from_description = AsyncMock(return_value=[
-        LLMCandidate(
-            anime_title="Death Note",
-            confidence_level="high",
-            match_reason="<b>Cuaderno negro</b> que mata personas.",
-        )
-    ])
+    mock_llm.infer_animes_from_description = AsyncMock(
+        return_value=[
+            LLMCandidate(
+                anime_title="Death Note",
+                confidence_level="high",
+                match_reason="<b>Cuaderno negro</b> que mata personas.",
+            )
+        ]
+    )
 
     mock_anilist = MagicMock()
-    mock_anilist.search_anime_by_title = AsyncMock(return_value=[
-        CanonicalAnime(
-            id=1535,
-            title=TitleInfo(romaji="Death Note", english="Death Note", native="デスノート"),
-            cover_image="https://example.com/dn.jpg",
-            synopsis="Light Yagami finds a notebook.",
-            year=2006,
-            format="TV",
-            is_adult=False,
-        )
-    ])
+    mock_anilist.search_anime_by_title = AsyncMock(
+        return_value=[
+            CanonicalAnime(
+                id=1535,
+                title=TitleInfo(romaji="Death Note", english="Death Note", native="デスノート"),
+                cover_image="https://example.com/dn.jpg",
+                synopsis="Light Yagami finds a notebook.",
+                year=2006,
+                format="TV",
+                is_adult=False,
+            )
+        ]
+    )
 
     service = TextSearchService(llm_provider=mock_llm, anilist_provider=mock_anilist)
     result = await service.search_by_description(
@@ -127,26 +133,32 @@ async def test_text_search_anti_hallucination_discard(monkeypatch: pytest.Monkey
 
     mock_llm = MagicMock(spec=GeminiLLMProvider)
     # LLM hallucinated an anime title that doesn't match AniList's result
-    mock_llm.infer_animes_from_description = AsyncMock(return_value=[
-        LLMCandidate(
-            anime_title="Completely Invented Title 999",
-            confidence_level="low",
-            match_reason="Invented reason",
-        )
-    ])
+    mock_llm.infer_animes_from_description = AsyncMock(
+        return_value=[
+            LLMCandidate(
+                anime_title="Completely Invented Title 999",
+                confidence_level="low",
+                match_reason="Invented reason",
+            )
+        ]
+    )
 
     mock_anilist = MagicMock()
-    mock_anilist.search_anime_by_title = AsyncMock(return_value=[
-        CanonicalAnime(
-            id=1,
-            title=TitleInfo(romaji="Cowboy Bebop", english="Cowboy Bebop", native="カウボーイビバップ"),
-            cover_image="https://example.com/cb.jpg",
-            synopsis="Space bounty hunters.",
-            year=1998,
-            format="TV",
-            is_adult=False,
-        )
-    ])
+    mock_anilist.search_anime_by_title = AsyncMock(
+        return_value=[
+            CanonicalAnime(
+                id=1,
+                title=TitleInfo(
+                    romaji="Cowboy Bebop", english="Cowboy Bebop", native="カウボーイビバップ"
+                ),
+                cover_image="https://example.com/cb.jpg",
+                synopsis="Space bounty hunters.",
+                year=1998,
+                format="TV",
+                is_adult=False,
+            )
+        ]
+    )
 
     service = TextSearchService(llm_provider=mock_llm, anilist_provider=mock_anilist)
     result = await service.search_by_description(
@@ -173,17 +185,19 @@ async def test_text_search_fallback_on_unconfigured_llm(monkeypatch: pytest.Monk
     mock_llm.infer_animes_from_description = AsyncMock(side_effect=LLMNotConfiguredError("No key"))
 
     mock_anilist = MagicMock()
-    mock_anilist.search_anime_by_title = AsyncMock(return_value=[
-        CanonicalAnime(
-            id=1535,
-            title=TitleInfo(romaji="Death Note", english="Death Note", native=None),
-            cover_image="https://example.com/dn.jpg",
-            synopsis="Light finds a notebook.",
-            year=2006,
-            format="TV",
-            is_adult=False,
-        )
-    ])
+    mock_anilist.search_anime_by_title = AsyncMock(
+        return_value=[
+            CanonicalAnime(
+                id=1535,
+                title=TitleInfo(romaji="Death Note", english="Death Note", native=None),
+                cover_image="https://example.com/dn.jpg",
+                synopsis="Light finds a notebook.",
+                year=2006,
+                format="TV",
+                is_adult=False,
+            )
+        ]
+    )
 
     service = TextSearchService(llm_provider=mock_llm, anilist_provider=mock_anilist)
     result = await service.search_by_description(
@@ -208,22 +222,28 @@ async def test_text_search_caching(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("src.services.text_search_service.get_redis_client", get_fake_redis)
 
     mock_llm = MagicMock(spec=GeminiLLMProvider)
-    mock_llm.infer_animes_from_description = AsyncMock(return_value=[
-        LLMCandidate(anime_title="Frieren", confidence_level="high", match_reason="Elfa maga")
-    ])
+    mock_llm.infer_animes_from_description = AsyncMock(
+        return_value=[
+            LLMCandidate(anime_title="Frieren", confidence_level="high", match_reason="Elfa maga")
+        ]
+    )
 
     mock_anilist = MagicMock()
-    mock_anilist.search_anime_by_title = AsyncMock(return_value=[
-        CanonicalAnime(
-            id=154587,
-            title=TitleInfo(romaji="Sousou no Frieren", english="Frieren: Beyond Journey's End", native=None),
-            cover_image="https://example.com/frieren.jpg",
-            synopsis="An elf mage after the hero's death.",
-            year=2023,
-            format="TV",
-            is_adult=False,
-        )
-    ])
+    mock_anilist.search_anime_by_title = AsyncMock(
+        return_value=[
+            CanonicalAnime(
+                id=154587,
+                title=TitleInfo(
+                    romaji="Sousou no Frieren", english="Frieren: Beyond Journey's End", native=None
+                ),
+                cover_image="https://example.com/frieren.jpg",
+                synopsis="An elf mage after the hero's death.",
+                year=2023,
+                format="TV",
+                is_adult=False,
+            )
+        ]
+    )
 
     service = TextSearchService(llm_provider=mock_llm, anilist_provider=mock_anilist)
 
@@ -246,35 +266,45 @@ async def test_text_search_endpoint_validation(async_client: AsyncClient) -> Non
     assert resp_short.status_code == 422
 
     # 2. Limit out of range (> 10)
-    resp_limit = await async_client.post("/api/v1/search/text", json={"description": "Valid description", "limit": 20})
+    resp_limit = await async_client.post(
+        "/api/v1/search/text", json={"description": "Valid description", "limit": 20}
+    )
     assert resp_limit.status_code == 422
 
 
 @pytest.mark.asyncio
-async def test_text_search_endpoint_success(monkeypatch: pytest.MonkeyPatch, async_client: AsyncClient) -> None:
+async def test_text_search_endpoint_success(
+    monkeypatch: pytest.MonkeyPatch, async_client: AsyncClient
+) -> None:
     mock_service = MagicMock()
-    mock_service.search_by_description = AsyncMock(return_value={
-        "query_type": "text",
-        "search_mode": "fallback",
-        "cached": False,
-        "filtered_count": 0,
-        "processing_time_ms": 42,
-        "results": [
-            {
-                "id": 1535,
-                "title": {"romaji": "Death Note", "english": "Death Note", "native": "デスノート"},
-                "cover_image": "https://example.com/dn.jpg",
-                "synopsis": "Light finds a notebook.",
-                "year": 2006,
-                "format": "TV",
-                "is_adult": False,
-                "confidence_percentage": None,
-                "confidence_level": "medium",
-                "match_reason": "Coincidencia en AniList",
-                "scene_info": None,
-            }
-        ],
-    })
+    mock_service.search_by_description = AsyncMock(
+        return_value={
+            "query_type": "text",
+            "search_mode": "fallback",
+            "cached": False,
+            "filtered_count": 0,
+            "processing_time_ms": 42,
+            "results": [
+                {
+                    "id": 1535,
+                    "title": {
+                        "romaji": "Death Note",
+                        "english": "Death Note",
+                        "native": "デスノート",
+                    },
+                    "cover_image": "https://example.com/dn.jpg",
+                    "synopsis": "Light finds a notebook.",
+                    "year": 2006,
+                    "format": "TV",
+                    "is_adult": False,
+                    "confidence_percentage": None,
+                    "confidence_level": "medium",
+                    "match_reason": "Coincidencia en AniList",
+                    "scene_info": None,
+                }
+            ],
+        }
+    )
 
     monkeypatch.setattr("src.api.v1.endpoints.search_text.get_text_service", lambda: mock_service)
 
@@ -288,4 +318,3 @@ async def test_text_search_endpoint_success(monkeypatch: pytest.MonkeyPatch, asy
     assert data["search_mode"] == "fallback"
     assert len(data["results"]) == 1
     assert data["results"][0]["id"] == 1535
-

@@ -3,6 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
+
 from src.api.v1.endpoints.search_image import extract_client_ip
 from src.services.text_search_service import TextSearchService
 

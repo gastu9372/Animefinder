@@ -1,9 +1,10 @@
 import os
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+
 from src.core.config import Settings, get_settings
 from src.main import create_app
 

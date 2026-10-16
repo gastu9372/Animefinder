@@ -1,10 +1,11 @@
 import logging
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
 from src.api.v1.router import api_v1_router
 from src.core.config import get_settings
 from src.core.exceptions import AppException, ProblemDetails
@@ -17,7 +18,9 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     settings = get_settings()
     setup_logging(debug=settings.DEBUG)
-    logger.info("Iniciando servicio AnimeFinder Backend", extra={"environment": settings.ENVIRONMENT})
+    logger.info(
+        "Iniciando servicio AnimeFinder Backend", extra={"environment": settings.ENVIRONMENT}
+    )
     yield
     logger.info("Deteniendo servicio AnimeFinder Backend")
 

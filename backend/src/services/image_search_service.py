@@ -7,10 +7,10 @@ import time
 from typing import Any
 
 from PIL import Image
+
 from src.core.config import Settings, get_settings
 from src.core.exceptions import InvalidImageError, RateLimitExceededError
 from src.core.redis import get_redis_client
-from src.domain.models import SceneInfo, SearchResultItem
 from src.providers.anilist import AniListProvider
 from src.providers.trace_moe import TraceMoeProvider
 

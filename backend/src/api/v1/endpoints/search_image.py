@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from fastapi import APIRouter, File, Request, UploadFile
+
 from src.core.config import get_settings
 from src.core.exceptions import InvalidImageError, UnsupportedMediaTypeError
 from src.core.security import is_allowed_image
@@ -27,7 +28,8 @@ def extract_client_ip(request: Request) -> str:
 
     # Verificar si el socket directo proviene de un proxy confiable
     is_trusted = any(
-        client_host == trusted or client_host.startswith(trusted.replace("/12", "").replace("/8", ""))
+        client_host == trusted
+        or client_host.startswith(trusted.replace("/12", "").replace("/8", ""))
         for trusted in settings.trusted_proxies_list
     )
 
@@ -59,11 +61,15 @@ async def search_by_image(
         raise InvalidImageError("El archivo de imagen está vacío.")
 
     if len(content) > settings.MAX_IMAGE_SIZE_BYTES:
-        raise InvalidImageError(f"La imagen supera el tamaño máximo permitido de {settings.MAX_IMAGE_SIZE_BYTES // (1024*1024)} MB.")
+        raise InvalidImageError(
+            f"La imagen supera el tamaño máximo permitido de {settings.MAX_IMAGE_SIZE_BYTES // (1024*1024)} MB."
+        )
 
     # 2. Validación de Magic Bytes en Python puro (ADR 0001)
     if not is_allowed_image(content):
-        raise UnsupportedMediaTypeError("Formato no admitido. Formatos permitidos: JPEG, PNG, WebP.")
+        raise UnsupportedMediaTypeError(
+            "Formato no admitido. Formatos permitidos: JPEG, PNG, WebP."
+        )
 
     # 3. Invocar servicio
     service = get_image_service()
