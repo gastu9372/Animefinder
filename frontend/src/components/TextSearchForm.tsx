@@ -60,7 +60,9 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
           aria-label="Descripción de la trama o personajes"
         />
         <div className="textarea-footer">
-          <span>Presioná <strong>Enter</strong> para buscar</span>
+          <span>
+            Presioná <strong>Enter</strong> para buscar
+          </span>
           <span
             className={`char-counter ${
               isTooLong ? "is-danger" : charCount > 450 ? "is-warning" : ""
@@ -72,7 +74,13 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
       </div>
 
       {isTooShort && (
-        <p style={{ fontSize: "0.8rem", color: "var(--color-warning)", marginTop: "-0.5rem" }}>
+        <p
+          style={{
+            fontSize: "0.8rem",
+            color: "var(--color-warning)",
+            marginTop: "-0.5rem",
+          }}
+        >
           La descripción debe tener al menos 3 caracteres.
         </p>
       )}
@@ -93,7 +101,13 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
         ))}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "0.5rem" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "0.5rem",
+        }}
+      >
         <button
           type="submit"
           disabled={!isValid || isLoading}

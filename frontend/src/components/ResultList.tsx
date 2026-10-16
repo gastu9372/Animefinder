@@ -24,7 +24,13 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
       case "trace.moe":
       default:
         return (
-          <span className="badge-tag" style={{ background: "hsla(210, 80%, 55%, 0.15)", color: "var(--color-info)" }}>
+          <span
+            className="badge-tag"
+            style={{
+              background: "hsla(210, 80%, 55%, 0.15)",
+              color: "var(--color-info)",
+            }}
+          >
             📷 Motor de Imagen: trace.moe
           </span>
         );
@@ -45,7 +51,9 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
 
         <div>
           <span style={{ color: "var(--color-text-muted)" }}>
-            {response.results.length} anime{response.results.length !== 1 ? "s" : ""} encontrado{response.results.length !== 1 ? "s" : ""}
+            {response.results.length} anime
+            {response.results.length !== 1 ? "s" : ""} encontrado
+            {response.results.length !== 1 ? "s" : ""}
           </span>
         </div>
       </div>
@@ -60,7 +68,9 @@ export const ResultList: React.FC<ResultListProps> = ({ response }) => {
             padding: "0 0.5rem",
           }}
         >
-          ℹ️ Se descartaron {response.filtered_count} resultado{response.filtered_count > 1 ? "s" : ""} por umbral de similitud o filtro de contenido.
+          ℹ️ Se descartaron {response.filtered_count} resultado
+          {response.filtered_count > 1 ? "s" : ""} por umbral de similitud o
+          filtro de contenido.
         </div>
       )}
 

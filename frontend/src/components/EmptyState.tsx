@@ -5,7 +5,10 @@ interface EmptyStateProps {
   onReset?: () => void;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({ queryType, onReset }) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({
+  queryType,
+  onReset,
+}) => {
   return (
     <div className="empty-state">
       <div className="empty-state-icon" aria-hidden="true">

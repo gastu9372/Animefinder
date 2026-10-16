@@ -13,7 +13,9 @@ import { ProblemDetails, SearchResponse } from "./types/api";
 export const App: React.FC = () => {
   const [activeMode, setActiveMode] = useState<"image" | "text">("image");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null);
+  const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(
+    null,
+  );
   const [error, setError] = useState<ProblemDetails | null>(null);
 
   const handleImageSearch = async (file: File) => {
@@ -32,7 +34,8 @@ export const App: React.FC = () => {
           type: "about:blank",
           title: "Error inesperado",
           status: 500,
-          detail: "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
+          detail:
+            "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
           code: "CLIENT_ERROR",
         });
       }
@@ -57,7 +60,8 @@ export const App: React.FC = () => {
           type: "about:blank",
           title: "Error inesperado",
           status: 500,
-          detail: "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
+          detail:
+            "No se pudo conectar con el servidor. Comprobá tu conexión a internet.",
           code: "CLIENT_ERROR",
         });
       }
@@ -113,12 +117,16 @@ export const App: React.FC = () => {
               margin: "0 auto 1.75rem",
             }}
           >
-            Subí una captura de cualquier escena o describí en lenguaje libre
-            lo que recordás de la trama y personajes.
+            Subí una captura de cualquier escena o describí en lenguaje libre lo
+            que recordás de la trama y personajes.
           </p>
 
           {/* Mode Selector Tabs */}
-          <div className="mode-tabs" role="tablist" aria-label="Modo de búsqueda">
+          <div
+            className="mode-tabs"
+            role="tablist"
+            aria-label="Modo de búsqueda"
+          >
             <button
               role="tab"
               aria-selected={activeMode === "image"}
@@ -143,24 +151,15 @@ export const App: React.FC = () => {
         {/* Search Input Forms */}
         <section aria-label="Formulario de búsqueda">
           {activeMode === "image" ? (
-            <ImageDropzone
-              onSearch={handleImageSearch}
-              isLoading={isLoading}
-            />
+            <ImageDropzone onSearch={handleImageSearch} isLoading={isLoading} />
           ) : (
-            <TextSearchForm
-              onSearch={handleTextSearch}
-              isLoading={isLoading}
-            />
+            <TextSearchForm onSearch={handleTextSearch} isLoading={isLoading} />
           )}
         </section>
 
         {/* Feedback & Result States */}
         {error && (
-          <ErrorAlert
-            problem={error}
-            onDismiss={() => setError(null)}
-          />
+          <ErrorAlert problem={error} onDismiss={() => setError(null)} />
         )}
 
         {isLoading && <SkeletonLoader />}
@@ -169,12 +168,14 @@ export const App: React.FC = () => {
           <ResultList response={searchResponse} />
         )}
 
-        {!isLoading && searchResponse && searchResponse.results.length === 0 && (
-          <EmptyState
-            queryType={searchResponse.query_type}
-            onReset={() => setSearchResponse(null)}
-          />
-        )}
+        {!isLoading &&
+          searchResponse &&
+          searchResponse.results.length === 0 && (
+            <EmptyState
+              queryType={searchResponse.query_type}
+              onReset={() => setSearchResponse(null)}
+            />
+          )}
       </main>
 
       <Footer />

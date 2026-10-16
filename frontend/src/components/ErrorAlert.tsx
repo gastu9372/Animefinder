@@ -13,7 +13,7 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
   onRetry,
 }) => {
   const [countdown, setCountdown] = useState<number | null>(
-    problem.retry_after_seconds ?? null
+    problem.retry_after_seconds ?? null,
   );
 
   useEffect(() => {
@@ -31,7 +31,8 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
       </div>
       <div className="error-details" style={{ flex: 1 }}>
         <h4>
-          {problem.title || "Ocurrió un error"} {problem.status ? `(${problem.status})` : ""}
+          {problem.title || "Ocurrió un error"}{" "}
+          {problem.status ? `(${problem.status})` : ""}
         </h4>
         <p>{problem.detail}</p>
 

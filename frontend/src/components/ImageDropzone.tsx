@@ -22,7 +22,9 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     setValidationError(null);
 
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      setValidationError("Formato no compatible. Por favor subí una imagen JPEG, PNG o WebP.");
+      setValidationError(
+        "Formato no compatible. Por favor subí una imagen JPEG, PNG o WebP.",
+      );
       return;
     }
 
@@ -114,7 +116,10 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   };
 
   return (
-    <div className="dropzone-wrapper" style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
+    <div
+      className="dropzone-wrapper"
+      style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}
+    >
       <input
         type="file"
         ref={fileInputRef}
@@ -163,7 +168,10 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
           </div>
         </div>
       ) : (
-        <div className="glass-panel preview-container" style={{ padding: "1.5rem" }}>
+        <div
+          className="glass-panel preview-container"
+          style={{ padding: "1.5rem" }}
+        >
           <div className="preview-image-wrapper">
             <img
               src={previewUrl}
@@ -172,7 +180,8 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             />
           </div>
           <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
-            {selectedFile?.name} ({(Number(selectedFile?.size) / (1024 * 1024)).toFixed(2)} MB)
+            {selectedFile?.name} (
+            {(Number(selectedFile?.size) / (1024 * 1024)).toFixed(2)} MB)
           </p>
           <div className="preview-actions">
             <button

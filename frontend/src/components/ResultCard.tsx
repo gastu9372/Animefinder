@@ -18,8 +18,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         result.confidence_percentage >= 0.85
           ? "confidence-high"
           : result.confidence_percentage >= 0.7
-          ? "confidence-medium"
-          : "confidence-low";
+            ? "confidence-medium"
+            : "confidence-low";
       return (
         <span className={`confidence-pill ${levelClass}`}>
           🎯 {pct}% de precisión
@@ -31,15 +31,15 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
       result.confidence_level === "high"
         ? "confidence-high"
         : result.confidence_level === "medium"
-        ? "confidence-medium"
-        : "confidence-low";
+          ? "confidence-medium"
+          : "confidence-low";
 
     const label =
       result.confidence_level === "high"
         ? "Confianza Alta"
         : result.confidence_level === "medium"
-        ? "Confianza Media"
-        : "Confianza Sugerida";
+          ? "Confianza Media"
+          : "Confianza Sugerida";
 
     return <span className={`confidence-pill ${levelClass}`}>✨ {label}</span>;
   };
@@ -63,7 +63,9 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         {result.is_adult && !isAdultRevealed && (
           <div className="cover-blur-overlay">
             <span style={{ fontSize: "1.25rem" }}>🔞</span>
-            <span style={{ fontSize: "0.75rem", color: "#fff", fontWeight: 600 }}>
+            <span
+              style={{ fontSize: "0.75rem", color: "#fff", fontWeight: 600 }}
+            >
               Contenido +18
             </span>
             <button
@@ -93,12 +95,15 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         {/* Badges Bar */}
         <div className="result-badges">
           {result.year && <span className="meta-badge">📅 {result.year}</span>}
-          {result.format && <span className="meta-badge">📺 {result.format}</span>}
-          {result.scene_info?.episode !== null && result.scene_info?.episode !== undefined && (
-            <span className="meta-badge scene-badge">
-              Episodio {result.scene_info.episode}
-            </span>
+          {result.format && (
+            <span className="meta-badge">📺 {result.format}</span>
           )}
+          {result.scene_info?.episode !== null &&
+            result.scene_info?.episode !== undefined && (
+              <span className="meta-badge scene-badge">
+                Episodio {result.scene_info.episode}
+              </span>
+            )}
           {result.scene_info?.timestamp_formatted && (
             <span className="meta-badge scene-badge">
               ⏱ {result.scene_info.timestamp_formatted}
@@ -150,19 +155,39 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                 type="button"
                 onClick={() => setShowVideo(true)}
                 className="btn-secondary"
-                style={{ padding: "0.35rem 0.85rem", fontSize: "0.8rem", marginTop: "0.25rem" }}
+                style={{
+                  padding: "0.35rem 0.85rem",
+                  fontSize: "0.8rem",
+                  marginTop: "0.25rem",
+                }}
               >
                 🎬 Ver escena en video
               </button>
             ) : (
               <div className="video-preview-section">
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                  <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-                    Vista previa de escena ({result.scene_info.timestamp_formatted})
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--color-text-muted)",
+                    }}
+                  >
+                    Vista previa de escena (
+                    {result.scene_info.timestamp_formatted})
                   </span>
                   <button
                     onClick={() => setShowVideo(false)}
-                    style={{ background: "none", color: "var(--color-text-muted)", fontSize: "0.8rem" }}
+                    style={{
+                      background: "none",
+                      color: "var(--color-text-muted)",
+                      fontSize: "0.8rem",
+                    }}
                   >
                     ✕ Cerrar video
                   </button>

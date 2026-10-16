@@ -44,11 +44,10 @@ def test_compute_title_similarity() -> None:
 
 @pytest.mark.asyncio
 async def test_gemini_provider_unconfigured() -> None:
-    settings = Settings(GEMINI_API_KEY="")
+    settings = Settings(GEMINI_API_KEY="", REDIS_URL="redis://localhost:6379/1")
     provider = GeminiLLMProvider(settings=settings)
     with pytest.raises(LLMNotConfiguredError):
         await provider.infer_animes_from_description("Un chico con un cuaderno de la muerte")
-
 
 
 @pytest.mark.asyncio
@@ -61,10 +60,11 @@ async def test_gemini_provider_daily_cap_exceeded(monkeypatch: pytest.MonkeyPatc
 
     monkeypatch.setattr("src.providers.gemini_ai.get_redis_client", get_fake_redis)
 
-    settings = Settings(GEMINI_API_KEY="dummy-key", LLM_DAILY_CALL_CAP=200)
+    settings = Settings(GEMINI_API_KEY="dummy-key", LLM_DAILY_CALL_CAP=200, REDIS_URL="redis://localhost:6379/1")
     provider = GeminiLLMProvider(settings=settings)
     with pytest.raises(LLMDailyCapReachedError):
         await provider.infer_animes_from_description("Un chico con un cuaderno")
+
 
 
 @pytest.mark.asyncio

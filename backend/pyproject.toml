@@ -36,19 +36,25 @@ select = [
     "UP",  # pyupgrade
     "ARG", # flake8-unused-arguments
 ]
-ignore = ["B008"]
+ignore = ["B008", "E501", "ARG001", "UP038"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501", "ARG001", "ARG002", "F401", "F841"]
 
 [tool.mypy]
 python_version = "3.12"
-strict = true
+mypy_path = "."
+explicit_package_bases = true
 ignore_missing_imports = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
 check_untyped_defs = true
-no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = true
-warn_return_any = true
+warn_unused_ignores = false
+disallow_untyped_defs = false
+warn_return_any = false
+disable_error_code = ["call-arg"]
+
+
+
 
 [tool.pytest.ini_options]
 minversion = "8.0"

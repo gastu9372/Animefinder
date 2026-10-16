@@ -1,8 +1,9 @@
 param (
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet("up", "down", "build", "logs", "ps", "test", "audit", "whoami")]
+    [ValidateSet("up", "down", "build", "logs", "ps", "test", "audit", "whoami", "lint")]
     [string]$Action
 )
+
 
 
 
@@ -54,6 +55,15 @@ switch ($Action) {
     "whoami" {
         & $dockerBin compose exec backend id
     }
+    "lint" {
+        & $dockerBin compose exec backend ruff check --fix .
+        & $dockerBin compose exec backend ruff format .
+        & $dockerBin compose exec backend ruff check .
+        & $dockerBin compose exec backend ruff format --check .
+        & $dockerBin compose exec backend mypy src tests
+    }
 }
+
+
 
 
