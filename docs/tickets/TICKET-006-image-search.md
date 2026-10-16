@@ -5,7 +5,7 @@
 * **Rama asignada:** `feature/image-search`
 * **Asignado a:** Backend Developer
 * **Revisor / QA:** QA & Security Tester
-* **Estado:** in progress
+* **Estado:** done
 * **Dependencias:** TICKET-005 (Anime Provider Layer)
 
 ---
