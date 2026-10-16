@@ -1,8 +1,10 @@
 param (
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet("up", "down", "build", "logs", "ps", "test")]
+    [ValidateSet("up", "down", "build", "logs", "ps", "test", "audit", "whoami")]
     [string]$Action
 )
+
+
 
 # Agregar directorio de Docker a PATH del proceso para docker-credential-desktop
 $dockerDir = "$env:LOCALAPPDATA\Programs\DockerDesktop\resources\bin"
@@ -46,4 +48,12 @@ switch ($Action) {
     "test" {
         & $dockerBin compose exec backend pytest
     }
+    "audit" {
+        & $dockerBin compose exec backend pip-audit
+    }
+    "whoami" {
+        & $dockerBin compose exec backend id
+    }
 }
+
+
