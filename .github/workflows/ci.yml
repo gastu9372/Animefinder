@@ -52,10 +52,12 @@ jobs:
 
       - name: Run Pytest Suite with Coverage
         env:
+          PYTHONPATH: .
           ENVIRONMENT: test
           REDIS_URL: redis://localhost:6379/0
           CORS_ORIGINS: http://localhost:3000
-        run: pytest tests/ --cov=src --cov-report=term-missing
+        run: pytest
+
 
 
   frontend-ci:
