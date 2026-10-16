@@ -40,10 +40,16 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
         {countdown !== null && countdown > 0 && (
           <span
             className="retry-countdown"
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem",
+            }}
           >
             <IconClock size={13} />
-            <span>Podés reintentar en {countdown} segundo{countdown > 1 ? "s" : ""}</span>
+            <span>
+              Podés reintentar en {countdown} segundo{countdown > 1 ? "s" : ""}
+            </span>
           </span>
         )}
 

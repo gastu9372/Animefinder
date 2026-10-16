@@ -42,7 +42,8 @@ export const Footer: React.FC = () => {
           servidores permanentes.
         </p>
         <p style={{ fontSize: "0.75rem", opacity: 0.8 }}>
-          © {new Date().getFullYear()} AnimeFinder — Plataforma de referencia sin fines comerciales.
+          © {new Date().getFullYear()} AnimeFinder — Plataforma de referencia
+          sin fines comerciales.
         </p>
       </div>
     </footer>

@@ -98,12 +98,10 @@ export const App: React.FC = () => {
       >
         {/* Hero Section */}
         <section className="hero-section">
-          <h1 className="hero-title">
-            Encontrá el anime que estás buscando
-          </h1>
+          <h1 className="hero-title">Encontrá el anime que estás buscando</h1>
           <p className="hero-subtitle">
-            Subí una captura de cualquier escena o describí la trama y personajes
-            que recordás para identificar el anime.
+            Subí una captura de cualquier escena o describí la trama y
+            personajes que recordás para identificar el anime.
           </p>
 
           {/* Mode Selector Tabs */}

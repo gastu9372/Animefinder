@@ -115,7 +115,9 @@ export const TextSearchForm: React.FC<TextSearchFormProps> = ({
           className="btn-primary"
         >
           <IconSearch size={16} />
-          <span>{isLoading ? "Buscando coincidencias..." : "Buscar Anime"}</span>
+          <span>
+            {isLoading ? "Buscando coincidencias..." : "Buscar Anime"}
+          </span>
         </button>
       </div>
     </form>

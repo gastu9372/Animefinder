@@ -190,7 +190,9 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               className="btn-primary"
             >
               <IconSearch size={16} />
-              <span>{isLoading ? "Buscando escena..." : "Identificar Anime"}</span>
+              <span>
+                {isLoading ? "Buscando escena..." : "Identificar Anime"}
+              </span>
             </button>
             <button
               onClick={handleClear}
